@@ -56,7 +56,7 @@ async function addContact(name, email, phone) {
     return newContact;
 }
 
-async function updateContact(contactId, updatedData) {
+async function updateData(contactId, updatedData) {
     const contacts = await readContacts();
     const index = contacts.findIndex((contact) => contact.id === contactId);
     if (index === -1) {
@@ -74,5 +74,5 @@ export default {
     getContactById,
     removeContact,
     addContact,
-    updateContact
+    updateData
 }

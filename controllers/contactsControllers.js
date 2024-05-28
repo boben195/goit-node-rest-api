@@ -6,14 +6,7 @@ export const getAllContacts = (req, res) => {
     
 };
 
-// export const getAllContacts = async (req, res) => {
-//     try {
-//         const contacts = await contactsServices.listContacts();
-//         res.status(200).json(contacts);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+
 
 export const getOneContact = (req, res) => {
     const id = req.params.id;
