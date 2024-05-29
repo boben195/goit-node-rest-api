@@ -44,7 +44,7 @@ export const deleteContact = (req, res) => {
 export const createContact = (req, res) => {
     const { error, value } = createContactSchema.validate(req.body);
     if (error) {
-        return res.status(400).json({message: error.message})
+        return res.status(400).json({message: "Bad Request"})
     }
     const { name, email, phone } = value
     contactsServices.addContact(name, email, phone)
