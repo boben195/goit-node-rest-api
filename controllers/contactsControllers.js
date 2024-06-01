@@ -80,3 +80,19 @@ export const updateContact = (req, res) => {
         console.error("error:", error)
     })
 };
+
+
+export const updateStatusContact = async (req, res) => {
+    const id = req.params.id;
+    
+    Contact.findById(id)
+        .then((contact) => {
+            if (!contact) {
+            return res.status(404).json({message: "Not found"})
+            }
+            return updateStatusContact(id, req.body)
+        })
+    .catch((error) => {
+        console.error("error:", error)
+    })
+}
