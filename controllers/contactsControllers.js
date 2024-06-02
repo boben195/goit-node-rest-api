@@ -1,8 +1,14 @@
-import contactsServices from "../services/contactsServices.js";
+// import contactsServices from "../services/contactsServices.js";
+import Contact from "../models/contacts.js"
 import { createContactSchema, updateContactSchema } from "../schemas/contactSchemas.js";
 
+
 export const getAllContacts = (req, res) => {
-     contactsServices.listContacts().then((contacts) => res.status(200).json(contacts))
+    Contact.find()
+        .then((contacts) => res.status(200).json(contacts))
+        .catch(error => {
+            console.error("error:", error);
+        });
     
 };
 
@@ -11,7 +17,7 @@ export const getAllContacts = (req, res) => {
 export const getOneContact = (req, res) => {
     const id = req.params.id;
 
-    contactsServices.getContactById(id)
+    Contact.findById(id)
         .then(contact => {
             if (contact) {
                 res.status(200).json(contact);
@@ -28,7 +34,7 @@ export const getOneContact = (req, res) => {
 
 export const deleteContact = (req, res) => {
     const id = req.params.id;
-    contactsServices.removeContact(id)
+    Contact.findById(id)
         .then(delContact => {
             if (delContact) {
                 res.status(200).json(delContact);
@@ -47,7 +53,7 @@ export const createContact = (req, res) => {
         return res.status(400).json({message: "Bad Request"})
     }
     const { name, email, phone } = value
-    contactsServices.addContact(name, email, phone)
+    Contact.create(name, email, phone)
         .then(newContact => {
             res.status(201).json(newContact);
         })
@@ -68,7 +74,7 @@ export const updateContact = (req, res) => {
     if (error) {
         return res.status(400).json({message: error.message})
     }
-    contactsServices.updateData(id, updatedData)
+    Contact.findByIdAndUpdate(id, updatedData, {new: true})
         .then((contact) => {
             if (contact) {
             res.status(200).json(contact)
@@ -90,7 +96,7 @@ export const updateStatusContact = async (req, res) => {
             if (!contact) {
             return res.status(404).json({message: "Not found"})
             }
-            return updateStatusContact(id, req.body)
+            return Contact.findByIdAndUpdate(id, req.body, {new: true})
         })
     .catch((error) => {
         console.error("error:", error)
