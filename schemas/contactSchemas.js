@@ -6,9 +6,10 @@ export const createContactSchema = Joi.object({
         .max(30)
         .required(),
     email: Joi.string()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+        .email()
         .required(),
     phone: Joi.string().required(),
+    favorite: Joi.boolean(),
 });
 
 export const updateContactSchema = Joi.object({
@@ -18,6 +19,7 @@ export const updateContactSchema = Joi.object({
         .max(30),
         
     email: Joi.string()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        .email(),
     phone: Joi.string(),
+    favorite: Joi.boolean(),
 })
