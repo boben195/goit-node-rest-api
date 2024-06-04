@@ -8,6 +8,9 @@ import {
   updateStatusContact,
 } from "../controllers/contactsControllers.js";
 
+import { createContactSchema, updateContactSchema, updateFavoriteSchema } from "../schemas/contactSchemas.js";
+import validateBody from "../helpers/validateBody.js";
+
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", getAllContacts);
@@ -16,10 +19,10 @@ contactsRouter.get("/:id", getOneContact);
 
 contactsRouter.delete("/:id", deleteContact);
 
-contactsRouter.post("/", createContact);
+contactsRouter.post("/", validateBody(createContactSchema), createContact);
 
-contactsRouter.put("/:id", updateContact);
+contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
 
-contactsRouter.patch("/:id/favorite", updateStatusContact);
+contactsRouter.patch("/:id/favorite", validateBody(updateFavoriteSchema), updateStatusContact);
 
 export default contactsRouter;
