@@ -5,7 +5,10 @@ import Contact from "../models/contacts.js"
 
 
 export const getAllContacts = (req, res) => {
-    Contact.find()
+
+    const { _id: owner } = req.user;
+
+    Contact.find({owner})
         .then((contacts) => res.status(200).json(contacts))
         .catch(error => {
             console.error("error:", error);
@@ -17,10 +20,12 @@ export const getAllContacts = (req, res) => {
 
 export const getOneContact = (req, res) => {
     const id = req.params.id;
+    const { _id: owner } = req.user;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({message: "Invalid ID format"})
 }
-    Contact.findById(id)
+    Contact.findById({_id: id, owner})
         .then(contact => {
             if (contact) {
                 res.status(200).json(contact);
@@ -37,11 +42,13 @@ export const getOneContact = (req, res) => {
 
 export const deleteContact = (req, res) => {
     const id = req.params.id;
+    const { _id: owner } = req.user;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid ID format" })
     }
 
-    Contact.findByIdAndDelete(id)
+    Contact.findByIdAndDelete({_id: id, owner})
         .then(delContact => {
             if (delContact) {
                 res.status(200).json(delContact);
@@ -60,7 +67,8 @@ export const createContact = (req, res) => {
   
 
     const { name, email, phone, favorite } = req.body;
-    const newContact = new Contact({ name, email, phone, favorite });
+    const owner = req.user._id
+    const newContact = new Contact({ name, email, phone, favorite, owner });
 
     newContact.save()
         .then(savedContact => {

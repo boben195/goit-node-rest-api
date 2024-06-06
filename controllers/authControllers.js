@@ -17,11 +17,13 @@ export const registerUser = async (req, res, next) => {
         }
 
         const passwordHash = await bcrypt.hash(password, 10)
+        
         const newUser = await User.create({ email, password: passwordHash });
         
         res.status(201).json({
             email: newUser.email,
             subscription: newUser.subscription,
+            
         })
     }
     catch(error) {
@@ -49,7 +51,7 @@ export const loginUser = async (req, res, next) => {
             token: token,
             user: {
                 email: user.email,
-                subscription: newUser.subscription,
+                subscription: user.subscription,
             }
         });
             }
