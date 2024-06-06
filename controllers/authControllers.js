@@ -72,3 +72,19 @@ export const logoutUser = async (req, res, next) => {
         }
 }
 
+export const currentUser = async (req, res, next) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+        const { email, subscription } = req.user;
+        
+        res.status(200).json({
+            email,
+            subscription
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+

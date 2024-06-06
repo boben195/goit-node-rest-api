@@ -85,6 +85,7 @@ export const createContact = (req, res) => {
 export const updateContact = (req, res) => {
     const id = req.params.id;
     const updatedData = req.body
+    const { _id: owner } = req.user;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
@@ -94,7 +95,7 @@ export const updateContact = (req, res) => {
         return res.status(400).json({message: "Body must have at least one field"})
     } 
     
-    Contact.findByIdAndUpdate(id, updatedData, {new: true})
+    Contact.findByIdAndUpdate({ _id: id, owner }, updatedData, { new: true })
         .then((contact) => {
             if (contact) {
             res.status(200).json(contact)
@@ -111,12 +112,12 @@ export const updateContact = (req, res) => {
 
 export const updateStatusContact = (req, res) => {
     const id = req.params.id;
-
+    const { _id: owner } = req.user;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
     }
 
-    Contact.findById(id)
+    Contact.findOne({_id: id, owner})
         .then(contact => {
             if (!contact) {
                 return res.status(404).json({ message: "Not found" });
