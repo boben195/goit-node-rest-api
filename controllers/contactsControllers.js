@@ -25,18 +25,20 @@ export const getOneContact = (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({message: "Invalid ID format"})
 }
-    Contact.findById({_id: id, owner})
+    Contact.findOne({_id: id, owner})
         .then(contact => {
-            if (contact) {
-                res.status(200).json(contact);
-            } else {
-                res.status(404).json({ message: 'Not found' });
+            if (!contact || contact.owner.toString() !== req.user._id.toString()) {
+                return res.status(404).json({ message: 'Not found' });
             }
+            res.status(200).json(contact);
         })
         .catch(error => {
             console.error("error:", error);
         });
 };
+
+
+
  
 
 
@@ -48,13 +50,12 @@ export const deleteContact = (req, res) => {
         return res.status(400).json({ message: "Invalid ID format" })
     }
 
-    Contact.findByIdAndDelete({_id: id, owner})
+    Contact.findOneAndDelete({_id: id, owner})
         .then(delContact => {
-            if (delContact) {
-                res.status(200).json(delContact);
-            } else {
-                res.status(404).json({ message: "Not found"});
+            if (!delContact || delContact.owner.toString() !== req.user._id.toString()) {
+                return res.status(404).json({ message: "Not found" });
             }
+            res.status(200).json(delContact);
         })
         .catch(error => {
             console.error("error:", error);
@@ -95,13 +96,12 @@ export const updateContact = (req, res) => {
         return res.status(400).json({message: "Body must have at least one field"})
     } 
     
-    Contact.findByIdAndUpdate({ _id: id, owner }, updatedData, { new: true })
-        .then((contact) => {
-            if (contact) {
-            res.status(200).json(contact)
-            } else {
-            res.status(404).json({message: "Not found"})
-        }
+    Contact.findOneAndUpdate({ _id: id, owner }, updatedData, { new: true })
+        .then(contact => {
+            if (!contact || contact.owner.toString() !== req.user._id.toString()) {
+                return res.status(404).json({ message: "Not found" });
+            }
+            res.status(200).json(contact);
         })
         .catch((error) => {
         console.error("error:", error)
@@ -119,10 +119,10 @@ export const updateStatusContact = (req, res) => {
 
     Contact.findOne({_id: id, owner})
         .then(contact => {
-            if (!contact) {
+            if (!contact || contact.owner.toString() !== req.user._id.toString()) {
                 return res.status(404).json({ message: "Not found" });
             }
-            return Contact.findByIdAndUpdate(id, req.body, { new: true });
+            return Contact.findOneAndUpdate(id, req.body, { new: true });
         })
         .then(updatedContact => {
             if (!updatedContact) {
