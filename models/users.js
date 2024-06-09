@@ -19,7 +19,8 @@ const contactSchema = new mongoose.Schema(
   token: {
     type: String,
     default: null,
-  },
+    },
+  avatarURL: String,
 }, {
     versionKey: false
   }

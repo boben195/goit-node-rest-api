@@ -2,9 +2,15 @@ import User from "../models/users.js";
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import path from "node:path";
+import Jimp from "jimp";
+import gravatar from "gravatar";
+import cripto from "node:crypto";
+import fs from "fs/promises"
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const avatarFolder = path.resolve("public", "avatars");
 
 
 export const registerUser = async (req, res, next) => {
@@ -83,6 +89,28 @@ export const currentUser = async (req, res, next) => {
             email,
             subscription
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateAvatar = async (req, res, next) => {
+    try {
+        const { _id } = req.user;
+        if (!req.file) {
+            return res.status(400).json({ message: "Avatar not uploaded" });
+        }
+        const { path: tmpUpload, originalname } = req.file
+        
+        const img = await Jimp.read(tmpUpload);
+        img.resize(250, 250).write(tmpUpload)
+
+        const filename = `${cripto.randomUUID()}_${originalname}`;
+        await fs.rename(tmpUpload, resultUpload);
+        const avatarURL = path.join("avatars", filename);
+
+        await User.findByIdAndUpdate(_id, { avatarURL });
+        res.status(200).json({ avatarURL });
     } catch (error) {
         next(error)
     }
