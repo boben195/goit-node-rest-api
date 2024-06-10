@@ -108,7 +108,7 @@ export const updateAvatar = async (req, res, next) => {
 
         const filename = `${cripto.randomUUID()}_${originalname}`;
         const resultUpload = path.join(avatarFolder, filename)
-        //******************************************************** */
+        
         await fs.rename(tmpUpload, resultUpload);
         const avatarURL = path.join("avatars", filename);
 
