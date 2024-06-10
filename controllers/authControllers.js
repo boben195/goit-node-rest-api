@@ -23,8 +23,8 @@ export const registerUser = async (req, res, next) => {
         }
 
         const passwordHash = await bcrypt.hash(password, 10)
-        
-        const newUser = await User.create({ email, password: passwordHash });
+        const avatarURL = gravatar.url(email);
+        const newUser = await User.create({ email, password: passwordHash, avatarURL });
         
         res.status(201).json({
             email: newUser.email,
@@ -100,12 +100,15 @@ export const updateAvatar = async (req, res, next) => {
         if (!req.file) {
             return res.status(400).json({ message: "Avatar not uploaded" });
         }
+
         const { path: tmpUpload, originalname } = req.file
         
         const img = await Jimp.read(tmpUpload);
         img.resize(250, 250).write(tmpUpload)
 
         const filename = `${cripto.randomUUID()}_${originalname}`;
+        const resultUpload = path.join(avatarFolder, filename)
+        //******************************************************** */
         await fs.rename(tmpUpload, resultUpload);
         const avatarURL = path.join("avatars", filename);
 
