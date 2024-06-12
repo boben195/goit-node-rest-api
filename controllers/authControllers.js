@@ -167,7 +167,7 @@ export const forwordVerifyMail = async (req, res, next) => {
             to: email,
             from: "boben195@ukr.net",
             subject: "Welcome to hell",
-            html: `Conform your mail or DIE. Please go to the link <a href="http://localhost:3000/users/verify/${verificationToken}">`,
+            html: `Conform your mail or DIE. Please go to the link <a href="http://localhost:3000/users/verify/${verificationToken}">Link</a>`,
             text: `Conform your mail or DIE. Please go to the link http://localhost:3000/users/verify/${verificationToken}`,
         }
         await sendMail(verifyMail);
