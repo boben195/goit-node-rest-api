@@ -8,11 +8,13 @@ import gravatar from "gravatar";
 import cripto from "node:crypto";
 import fs from "fs/promises"
 
-import { sendMail } from "../sandmail.js";
+import { sendMail } from "../helpers/sandmail.js";
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const avatarFolder = path.resolve("public", "avatars");
+
+const URL = process.env.URL;
 
 
 export const registerUser = async (req, res, next) => {
@@ -31,10 +33,10 @@ export const registerUser = async (req, res, next) => {
 
         const verifyMail = {
             to: email,
-            from: "boben195@ukr.net",
+            from: "example195@ukr.net",
             subject: "Welcome to hell",
-            html: `Conform your mail or DIE. Please go to the  <a href="http://localhost:3000/users/verify/${verificationToken}">Link</a>`,
-            text: `Conform your mail or DIE. Please go to the link http://localhost:3000/users/verify/${verificationToken}`,
+            html: `Conform your mail or DIE. Please go to the  <a href="${URL}/users/verify/${verificationToken}">Link</a>`,
+            
         }
         await sendMail(verifyMail);
         
@@ -165,10 +167,10 @@ export const forwordVerifyMail = async (req, res, next) => {
 
         const verifyMail = {
             to: email,
-            from: "boben195@ukr.net",
+            from: "example195@ukr.net",
             subject: "Welcome to hell",
-            html: `Conform your mail or DIE. Please go to the link <a href="http://localhost:3000/users/verify/${verificationToken}">Link</a>`,
-            text: `Conform your mail or DIE. Please go to the link http://localhost:3000/users/verify/${verificationToken}`,
+            html: `Conform your mail or DIE. Please go to the link <a href="${URL}/users/verify/${user.verificationToken}">Link</a>`,
+            
         }
         await sendMail(verifyMail);
         res.status(200).json({message: "Verification email sent"})
